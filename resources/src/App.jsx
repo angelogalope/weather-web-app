@@ -9,7 +9,7 @@ function App() {
   
   const getWeather = async () => {
     try {
-      const response = await axios.get(`http://localhost/api/weather/${place}`);
+      const response = await axios.get(`http://localhost:8000/api/weather/${place}`);
       setWeather(response.data.weather);
     } catch (error) {
       console.error('Error fetching weather data:', error);
