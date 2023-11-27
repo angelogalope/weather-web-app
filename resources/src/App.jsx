@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import { IoSearch } from "react-icons/io5";
+import Clock from './components/Clock';
 
 function App() {
   const [place, setPlace] = useState("");
@@ -18,6 +19,9 @@ function App() {
 
   return (
     <div className="flex flex-col gap-2 items-center justify-center w-full h-screen bg-[url('/images/bg-image.jpg')] bg-cover">
+      <div className='flex items-center gap-1 bg-black text-white text-xl font-semibold bg-opacity-30 w-auto h-auto rounded-lg p-3 top-5 right-5 absolute z-10'>
+        <Clock />
+      </div>
       <div className='flex gap-1 bg-black text-white bg-opacity-30 w-[352px] h-auto rounded-lg p-3 z-10'>
         <input 
           placeholder='Search place'
