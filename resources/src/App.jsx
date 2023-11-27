@@ -4,6 +4,19 @@ import './App.css';
 import { IoSearch } from "react-icons/io5";
 import Clock from './components/Clock';
 
+import clearSky from '/images/clear-sky.png';
+import clearSkyNight from '/images/clear-skyNight.png';
+import fewClouds from '/images/few-clouds.png';
+import fewCloudsNight from '/images/few-cloudsNight.png';
+import scatteredClouds from '/images/scattered-clouds.png';
+import brokenClouds from '/images/broken-clouds.png';
+import showerRain from '/images/shower-rain.png';
+import showerRainNight from '/images/shower-rainNight.png';
+import rain from '/images/rain.png';
+import thunderstorm from '/images/thunderstorm.png';
+import snow from '/images/snow.png';
+import fog from '/images/fog.png';
+
 function App() {
   const [place, setPlace] = useState("");
   const [weather, setWeather] = useState(null);
@@ -15,6 +28,28 @@ function App() {
     } catch (error) {
       console.error('Error fetching weather data:', error);
     }
+  };
+
+  const weatherIconMapping = {
+    "01d": clearSky,
+    "02d": fewClouds,
+    "03d": scatteredClouds,
+    "04d": brokenClouds,
+    "09d": showerRain,
+    "10d": rain,
+    "11d": thunderstorm,
+    "13d": snow,
+    "50d": fog,
+    
+    "01n": clearSkyNight,
+    "02n": fewCloudsNight,
+    "03n": scatteredClouds,
+    "04n": brokenClouds,
+    "09n": showerRainNight,
+    "10n": rain,
+    "11n": thunderstorm,
+    "13n": snow,
+    "50n": fog,
   };
 
   return (
@@ -48,7 +83,11 @@ function App() {
                 <h1 className='text-5xl font-semibold'>{weather.main.temp}°</h1>
                 <p>{weather.weather[0].main}</p>
                 <div className='flex flex-col items-end'>
-                  <img src={`images/${weather.weather[0].icon}.png`} alt="weather-icon" className='w-[72px] h-[72px]'/>
+                <img
+                  src={weatherIconMapping[weather.weather[0].icon]}
+                  alt="weather-icon"
+                  className='w-[72px] h-[72px]'
+                />
                 </div>
               </div>
               <div className='flex flex-col items-start w-[162px] h-[162px] text-white bg-black bg-opacity-40 rounded-lg p-2'>
