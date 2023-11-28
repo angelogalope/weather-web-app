@@ -204,13 +204,19 @@ function App() {
 
   return (
     <div style={backgroundImageStyle} className="flex flex-col gap-2 items-center justify-center w-full h-screen bg-cover">
+
+      {/* Current Clock */}
       <div className='flex items-center gap-1 bg-black text-white text-xl font-semibold bg-opacity-30 w-auto h-auto rounded-lg p-3 top-5 right-5 absolute z-10'>
         <Clock />
       </div>
+
+      {/* Weather App Title and Description */}
       <div className='text-white text-center py-3 px-[332px] flex flex-col gap-2'>
         <h1 id='title' className='text-5xl font-black'>MelloWeather</h1>
         <p id='desc' className='text-sm font-normal'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
       </div>
+
+      {/* Search Bar */}
       <div className='flex gap-1 bg-black text-white bg-opacity-30 w-[352px] h-auto rounded-lg p-3'>
         <input 
           placeholder='Search place'
@@ -225,9 +231,11 @@ function App() {
           className='w-full text-sm outline-none border-b border-white bg-black bg-opacity-0'/>
         <button className='font-bold' type='submit' onClick={getWeather} ><IoSearch /></button>
       </div>
-
       
+      {/* Weather Data */}
       {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
+
+        // Weather Data
         <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[752px] h-auto rounded-lg p-5'>
           <div className='flex flex-row justify-between'>
             <div className='flex flex-col'>
@@ -257,6 +265,8 @@ function App() {
               </div>
             </div>
           </div>
+
+          {/* Forecast Data */}
           <div id='forecast' className='flex justify-center pt-10 gap-5'>
             <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
               <h1 className='font-semibold'>Today</h1>
@@ -284,8 +294,8 @@ function App() {
               <h1>Clear Sky</h1>
             </div>
           </div>
-          
         </div>
+
       )}
     </div>
   );
