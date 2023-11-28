@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\ForecastController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/weather/{place_name}', [WeatherController::class, 'getWeather']);
+Route::get('/forecast/{cityName}', [ForecastController::class, 'getForecast']);
 
 
 

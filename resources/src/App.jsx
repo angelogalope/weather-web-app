@@ -207,7 +207,11 @@ function App() {
       <div className='flex items-center gap-1 bg-black text-white text-xl font-semibold bg-opacity-30 w-auto h-auto rounded-lg p-3 top-5 right-5 absolute z-10'>
         <Clock />
       </div>
-      <div className='flex gap-1 bg-black text-white bg-opacity-30 w-[352px] h-auto rounded-lg absolute top-5 p-3 z-10'>
+      <div className='text-white text-center py-3 px-[332px] flex flex-col gap-2'>
+        <h1 id='title' className='text-5xl font-black'>MelloWeather</h1>
+        <p id='desc' className='text-sm font-normal'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
+      </div>
+      <div className='flex gap-1 bg-black text-white bg-opacity-30 w-[352px] h-auto rounded-lg p-3'>
         <input 
           placeholder='Search place'
           type="text" 
@@ -222,60 +226,65 @@ function App() {
         <button className='font-bold' type='submit' onClick={getWeather} ><IoSearch /></button>
       </div>
 
-      <div className='text-white text-center pb-8 px-[332px] fixed top-24 flex flex-col gap-2'>
-        <h1 id='title' className='text-5xl font-black'>MelloWeather</h1>
-        <p id='desc' className='text-sm font-normal'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
-      </div>
-
+      
       {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
-        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5 absolute top-60'>
-          <div>
-            <h1 className='text-2xl'>Today at <span className='text-4xl font-semibold'>{weather.name}</span></h1>
-            <h1>Country: {weather.sys.country}</h1>
+        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[752px] h-auto rounded-lg p-5'>
+          <div className='flex flex-row justify-between'>
+            <div className='flex flex-col'>
+              <h1 className='text-3xl font-black'>{weather.name}</h1>
+              <p>{weather.sys.country}</p>
+            </div>
             <h1>{getLocalDateTime(weather.dt, weather.timezone)}</h1>
           </div>
-          {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
-            <div className='flex gap-2'>
-              <div className='flex flex-col w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
-                <h1 className='text-5xl font-semibold'>{weather.main.temp}°</h1>
-                <p className='text-sm'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</p>
-                <div className='flex flex-col items-end'>
-                <img
-                  src={weatherIconMapping[weather.weather[0].icon]}
-                  alt="weather-icon"
-                  className='w-[72px] h-[72px]'
-                />
-                </div>
+          <div className='flex items-center justify-center gap-0'>
+            <img
+              src={weatherIconMapping[weather.weather[0].icon]}
+              alt="weather-icon"
+              className='w-[92px] h-[92px]'
+            />
+            <div className='flex flex-col items-center'>
+              <h1 className='text-8xl'>{weather.main.temp}°</h1>
+              <h1 className='text-2xl'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</h1>
+            </div>
+            <div className='flex flex-col items-start'>
+              <div className='flex items-center gap-2'>
+                <img src="images/wind.png" className='w-[32px] h-[32px]' />
+                <p>{Math.ceil(weather.wind.speed*100)/100} mph</p>
               </div>
-              <div className='flex flex-col items-start gap-1 w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
-                <h1 className='text-md font-semibold'>Information</h1>
-                <h1>Longitude: {Math.ceil(weather.coord.lon*100)/100}</h1>
-                <h1>Latitude: {Math.ceil(weather.coord.lat*100)/100}</h1>
-                <div className='flex flex-row justify-between gap-1'>
-                  <div className='flex flex-col'>
-                    <div className='flex gap-1 items-center'>
-                      <img src="images/humidity.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{Math.ceil(weather.main.humidity*100)/100}</p>
-                    </div>
-                    <div className='flex gap-1 items-center'>
-                      <img src="images/wind.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{Math.ceil(weather.wind.speed*100)/100}</p>
-                    </div>
-                  </div>
-                  <div className='flex flex-col'>
-                    <div className='flex gap-1 items-center'>
-                      <img src="images/sunrise.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{new Date(weather.sys.sunrise * 1000).toLocaleTimeString()}</p>
-                    </div>
-                    <div className='flex gap-1 items-center'>
-                      <img src="images/sunset.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{new Date(weather.sys.sunset * 1000).toLocaleTimeString()}</p>
-                    </div>
-                  </div>
-                </div>
+              <div className='flex items-center gap-2'>
+                <img src="images/humidity.png" className='w-[32px] h-[32px]' />
+                <p>{Math.ceil(weather.main.humidity*100)/100}%</p>
               </div>
             </div>
-          )}
+          </div>
+          <div id='forecast' className='flex justify-center pt-10 gap-5'>
+            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
+              <h1 className='font-semibold'>Today</h1>
+              <h1 className='text-2xl font-semibold'>30.71°</h1>
+              <h1>Clear Sky</h1>
+            </div>
+            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
+              <h1 className='font-semibold'>Today</h1>
+              <h1 className='text-2xl font-semibold'>30.71°</h1>
+              <h1>Clear Sky</h1>
+            </div>
+            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
+              <h1 className='font-semibold'>Today</h1>
+              <h1 className='text-2xl font-semibold'>30.71°</h1>
+              <h1>Clear Sky</h1>
+            </div>
+            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
+              <h1 className='font-semibold'>Today</h1>
+              <h1 className='text-2xl font-semibold'>30.71°</h1>
+              <h1>Clear Sky</h1>
+            </div>
+            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
+              <h1 className='font-semibold'>Today</h1>
+              <h1 className='text-2xl font-semibold'>30.71°</h1>
+              <h1>Clear Sky</h1>
+            </div>
+          </div>
+          
         </div>
       )}
     </div>
