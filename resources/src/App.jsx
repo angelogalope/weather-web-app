@@ -222,21 +222,20 @@ function App() {
         <button className='font-bold' type='submit' onClick={getWeather} ><IoSearch /></button>
       </div>
 
-      <div className='text-white text-center pb-8 px-[132px] fixed top-24 flex flex-col gap-2'>
-        <h1 className='text-5xl'>Weather App</h1>
-        <p className='text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae perferendis harum laborum minima, veniam vero, in molestiae expedita saepe asperiores corporis rerum numquam commodi sequi aut. Quidem labore eligendi quas.
-        Dolore nostrum laudantium necessitatibus perferendis magnam corrupti nobis ipsum doloremque, odit quis quos enim quae pariatur illum, dignissimos, officia tempora laboriosam error dolorum! Dolores quod ratione, perferendis adipisci incidunt quae!</p>
+      <div className='text-white text-center pb-8 px-[332px] fixed top-24 flex flex-col gap-2'>
+        <h1 id='title' className='text-5xl font-black'>MelloWeather</h1>
+        <p id='desc' className='text-sm font-normal'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
       </div>
 
       {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
-        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5 absolute top-64'>
+        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5 absolute top-60'>
           <div>
             <h1 className='text-2xl'>Today at <span className='text-4xl font-semibold'>{weather.name}</span></h1>
             <h1>Country: {weather.sys.country}</h1>
             <h1>{getLocalDateTime(weather.dt, weather.timezone)}</h1>
           </div>
           {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
-          <div className='flex gap-2'>
+            <div className='flex gap-2'>
               <div className='flex flex-col w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
                 <h1 className='text-5xl font-semibold'>{weather.main.temp}°</h1>
                 <p className='text-sm'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</p>
@@ -275,7 +274,7 @@ function App() {
                   </div>
                 </div>
               </div>
-          </div>
+            </div>
           )}
         </div>
       )}

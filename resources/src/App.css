@@ -1,3 +1,22 @@
+@font-face {
+    font-family: 'Mellow';
+    src: url('/fonts/MADEMellowPERSONALUSE-Black.otf') format('opentype'),
+         url('/fonts/MADEMellowPERSONALUSE-Regular.otf') format('opentype');
+    /* Add other font formats if necessary */
+    font-weight: normal;
+    font-style: normal;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#title {
+    font-family: 'Mellow', sans-serif; /* Use Mellow font, fallback to sans-serif if not available */
+}
+
+.desc{
+    font-family: 'Poppins';
+   }
