@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import { IoSearch } from "react-icons/io5";
+import { DateTime } from 'https://cdn.skypack.dev/luxon';
 import Clock from './components/Clock';
 
 import defaultBgImage from '/images/bg-image.jpg';
@@ -97,11 +98,39 @@ function App() {
   }
 
   useEffect(() => {
-    if(weather) {
-        const soundFile = soundMapping[weather?.weather[0]?.icon] || clearSkyMusic; // Provide a default music file
-        const audio = new Audio(soundFile);
-        setBgSound(audio);
+    let audio;
+  
+    if (weather) {
+      const soundFile = soundMapping[weather?.weather[0]?.icon] || clearSkyMusic;
+      audio = new Audio(soundFile);
+      setBgSound(audio);
     }
+  
+    const handleEnded = () => {
+      // Restart the audio when it ends
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch((error) => {
+          console.error('Error playing audio:', error);
+        });
+      }
+    };
+  
+    if (audio) {
+      audio.addEventListener('ended', handleEnded);
+  
+      audio.play().catch((error) => {
+        console.error('Error playing audio:', error);
+      });
+    }
+  
+    return () => {
+      if (audio) {
+        audio.removeEventListener('ended', handleEnded);
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
   }, [weather]);
 
   useEffect(() => {
@@ -156,25 +185,33 @@ function App() {
           type="text" 
           value={place}
           onChange={(e) => setPlace(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              getWeather();
+            }
+          }}
           className='w-full text-sm outline-none border-b border-white bg-black bg-opacity-0'/>
-        <button className='font-bold' onClick={getWeather}><IoSearch /></button>
+        <button className='font-bold' type='submit' onClick={getWeather} ><IoSearch /></button>
       </div>
 
-      <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5  z-10'>
-        <div>
-          {weather && (
-            <>
-              <h1 className='text-2xl'>Today at <span className='text-4xl font-semibold'>{weather.name}</span></h1>
-              <h1>Country: {weather.sys.country}</h1>
-            </>
-          )}
-        </div>
-        <div className='flex gap-2'>
-          {weather && (
-            <>
-              <div className='flex flex-col w-[162px] h-[162px] text-white bg-black bg-opacity-40 rounded-lg p-2'>
+      <div className='text-white text-center pb-8 px-[132px] fixed top-24 flex flex-col gap-2'>
+        <h1 className='text-5xl'>Weather App</h1>
+        <p className='text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae perferendis harum laborum minima, veniam vero, in molestiae expedita saepe asperiores corporis rerum numquam commodi sequi aut. Quidem labore eligendi quas.
+        Dolore nostrum laudantium necessitatibus perferendis magnam corrupti nobis ipsum doloremque, odit quis quos enim quae pariatur illum, dignissimos, officia tempora laboriosam error dolorum! Dolores quod ratione, perferendis adipisci incidunt quae!</p>
+      </div>
+
+      {weather && (
+        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5 absolute top-64'>
+          <div>
+            <h1 className='text-2xl'>Today at <span className='text-4xl font-semibold'>{weather.name}</span></h1>
+            <h1>Country: {weather.sys.country}</h1>
+            <h1>{DateTime.fromSeconds(weather.dt).toLocaleString(DateTime.DATETIME_FULL)}</h1>
+          </div>
+          <div className='flex gap-2'>
+              <div className='flex flex-col w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
                 <h1 className='text-5xl font-semibold'>{weather.main.temp}°</h1>
-                <p>{weather.weather[0].main}</p>
+                {/* <p>{weather.weather[0].main}</p> */}
+                <p className='text-sm'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</p>
                 <div className='flex flex-col items-end'>
                 <img
                   src={weatherIconMapping[weather.weather[0].icon]}
@@ -183,15 +220,36 @@ function App() {
                 />
                 </div>
               </div>
-              <div className='flex flex-col items-start w-[162px] h-[162px] text-white bg-black bg-opacity-40 rounded-lg p-2'>
-                <h1 className='text-xl font-semibold'>Coordinates</h1>
-                <h1 className='flex flex-col items-end'>Longitude: <span>{weather.coord.lon}</span></h1>
-                <h1 className='flex flex-col items-end'>Latitude: <span>{weather.coord.lat}</span></h1>
+              <div className='flex flex-col items-start gap-1 w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
+                <h1 className='text-md font-semibold'>Information</h1>
+                <h1>Longitude: {Math.ceil(weather.coord.lon*100)/100}</h1>
+                <h1>Latitude: {Math.ceil(weather.coord.lat*100)/100}</h1>
+                <div className='flex flex-row justify-between gap-1'>
+                  <div className='flex flex-col'>
+                    <div className='flex gap-1 items-center'>
+                      <img src="images/humidity.png" alt="humidity" className='w-[22px] h-[22px]' />
+                      <p className='text-sm'>{Math.ceil(weather.main.humidity*100)/100}</p>
+                    </div>
+                    <div className='flex gap-1 items-center'>
+                      <img src="images/wind.png" alt="humidity" className='w-[22px] h-[22px]' />
+                      <p className='text-sm'>{Math.ceil(weather.wind.speed*100)/100}</p>
+                    </div>
+                  </div>
+                  <div className='flex flex-col'>
+                    <div className='flex gap-1 items-center'>
+                      <img src="images/sunrise.png" alt="humidity" className='w-[22px] h-[22px]' />
+                      <p className='text-sm'>{DateTime.fromSeconds(weather.sys.sunrise).toLocaleString(DateTime.TIME_SIMPLE)}</p>
+                    </div>
+                    <div className='flex gap-1 items-center'>
+                      <img src="images/sunset.png" alt="humidity" className='w-[22px] h-[22px]' />
+                      <p className='text-sm'>{DateTime.fromSeconds(weather.sys.sunset).toLocaleString(DateTime.TIME_SIMPLE)}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
