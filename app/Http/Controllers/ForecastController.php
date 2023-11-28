@@ -22,9 +22,12 @@ class ForecastController extends Controller
 
             $forecastResults = $forecast->json();
 
+            // Extract the relevant forecast data for all available days
+            $extendedForecast = $this->extractExtendedForecast($forecastResults);
+
             return response()->json([
                 'cityName' => $cityName,
-                'forecast' => $forecastResults,
+                'forecast' => $extendedForecast,
             ]);
         } catch (Exception $e) {
             return response()->json(
@@ -37,32 +40,29 @@ class ForecastController extends Controller
         }
     }
 
-    public function defaultScreen(Request $request)
+    private function extractExtendedForecast(array $forecastResults)
     {
-        return response()->json(['message' => 'Please provide a place.'], 400);
-    }
+        // Assuming the forecast data is in the 'list' key of the response
+        $forecastList = $forecastResults['list'];
 
-    private function processWeatherData($data)
-    {
-        $weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        $weatherInfo = ['cityName' => "--" . $data['city']['name'] . "--"];
+        // Extract the forecast for all available days
+        $extendedForecast = [];
+        $currentDate = null;
 
-        for ($i = 0; $i < 5; $i++) {
-            $minTemp = number_format($data['list'][$i]['main']['temp_min'] - 273.15, 1);
-            $maxTemp = number_format($data['list'][$i]['main']['temp_max'] - 273.15, 2);
+        foreach ($forecastList as $forecastData) {
+            $date = date('Y-m-d', $forecastData['dt']);
 
-            $weatherInfo["day" . ($i + 1) . "Min"] = "Min: $minTemp°";
-            $weatherInfo["day" . ($i + 1) . "Max"] = "Max: $maxTemp°";
-            $weatherInfo["img" . ($i + 1)] = "http://openweathermap.org/img/wn/" . $data['list'][$i]['weather'][0]['icon'] . ".png";
-            $weatherInfo["day" . ($i + 1)] = $weekdays[$this->checkDay($i)];
+            // Include all available days
+            if (!in_array($date, array_column($extendedForecast, 'date'))) {
+                $extendedForecast[] = [
+                    'date' => $date,
+                    'weather' => $forecastData['weather'][0], // Assuming you want weather details
+                    'temperature' => $forecastData['main']['temp'], // Assuming you want temperature
+                    // Add more details as needed
+                ];
+            }
         }
 
-        return $weatherInfo;
-    }
-
-    private function checkDay($day)
-    {
-        $d = now();
-        return ($day + $d->dayOfWeek) > 6 ? $day + $d->dayOfWeek - 7 : $day + $d->dayOfWeek;
+        return $extendedForecast;
     }
 }

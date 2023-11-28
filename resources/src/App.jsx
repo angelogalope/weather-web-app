@@ -35,6 +35,7 @@ import fog from '/images/fog.png';
 function App() {
   const [place, setPlace] = useState("");
   const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
   const [bgSound, setBgSound] = useState(null);
   
   const getWeather = async () => {
@@ -43,12 +44,19 @@ function App() {
 
       if (response.data.weather) {
         setWeather(response.data.weather);
+        
+        const forecastResponse = await axios.get(`http://localhost:8000/api/forecast/${place}`);
+        if (forecastResponse.data.forecast) {
+          setForecast(forecastResponse.data.forecast);
+        } else {
+          setForecast(null);
+        }
       } else {
         alert("Place not found");
       }
     } catch (error) {
-      console.error('Error fetching weather data:', error);
-      alert("Error fetching weather data");
+      console.error('Error fetching data:', error);
+      alert("Error fetching data");
     }
   };
 
@@ -211,9 +219,9 @@ function App() {
       </div>
 
       {/* Weather App Title and Description */}
-      <div className='text-white text-center py-3 px-[332px] flex flex-col gap-2'>
-        <h1 id='title' className='text-5xl font-black'>MelloWeather</h1>
-        <p id='desc' className='text-sm font-normal'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
+      <div className='text-white text-center pt-3 px-[332px] flex flex-col gap-2'>
+        <h1 id='title' className='text-5xl font-black bg-clip-text text-transparent bg-gradient-to-l from-blue-900 to-green-600'>MelloWeather</h1>
+        <p id='desc' className='text-xs font-semibold'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
       </div>
 
       {/* Search Bar */}
@@ -236,7 +244,7 @@ function App() {
       {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
 
         // Weather Data
-        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[752px] h-auto rounded-lg p-5'>
+        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[752px] h-auto rounded-lg p-5 fade-in'>
           <div className='flex flex-row justify-between'>
             <div className='flex flex-col'>
               <h1 className='text-3xl font-black'>{weather.name}</h1>
@@ -266,36 +274,35 @@ function App() {
             </div>
           </div>
 
-          {/* Forecast Data */}
-          <div id='forecast' className='flex justify-center pt-10 gap-5'>
-            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
-              <h1 className='font-semibold'>Today</h1>
-              <h1 className='text-2xl font-semibold'>30.71°</h1>
-              <h1>Clear Sky</h1>
-            </div>
-            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
-              <h1 className='font-semibold'>Today</h1>
-              <h1 className='text-2xl font-semibold'>30.71°</h1>
-              <h1>Clear Sky</h1>
-            </div>
-            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
-              <h1 className='font-semibold'>Today</h1>
-              <h1 className='text-2xl font-semibold'>30.71°</h1>
-              <h1>Clear Sky</h1>
-            </div>
-            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
-              <h1 className='font-semibold'>Today</h1>
-              <h1 className='text-2xl font-semibold'>30.71°</h1>
-              <h1>Clear Sky</h1>
-            </div>
-            <div className='flex flex-col items-center w-auto h-[132px] p-4 border border-gray-500 rounded-md justify-between'>
-              <h1 className='font-semibold'>Today</h1>
-              <h1 className='text-2xl font-semibold'>30.71°</h1>
-              <h1>Clear Sky</h1>
-            </div>
-          </div>
-        </div>
+           {/* Forecast Data */}
+            {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && forecast && (
+              <div id='forecast' className='flex justify-center pt-10 gap-5 fade-in'>
+                {forecast.map((day, index) => {
+                  const forecastDate = new Date(day.date);
+                  const options = {
+                    weekday: 'long',
+                  };
+                  const dayOfWeek = new Intl.DateTimeFormat('en-US', options).format(forecastDate);
 
+                  if (index !== 0) {
+                    return (
+                      <div key={index} className='flex flex-col items-center w-[112px] h-auto p-4 border border-gray-500 rounded-md justify-between'>
+                        <h1 className='font-semibold text-xs'>{dayOfWeek}</h1>
+                        <img
+                          src={weatherIconMapping[weather.weather[0].icon]}
+                          alt="weather-icon"
+                          className='w-[32px] h-[32px]'
+                        />
+                        <h1 className='text-2xl font-semibold'>{Math.ceil(day.temperature - 273.15)}°</h1>
+                        <h1 className='text-center text-xs'>{day.weather.description}</h1>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            )}
+        </div>
       )}
     </div>
   );
