@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import { IoSearch } from "react-icons/io5";
-import { DateTime } from 'https://cdn.skypack.dev/luxon';
 import Clock from './components/Clock';
 
 import defaultBgImage from '/images/bg-image.jpg';
@@ -41,9 +40,15 @@ function App() {
   const getWeather = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/weather/${place}`);
-      setWeather(response.data.weather);
+
+      if (response.data.weather) {
+        setWeather(response.data.weather);
+      } else {
+        alert("Place not found");
+      }
     } catch (error) {
       console.error('Error fetching weather data:', error);
+      alert("Error fetching weather data");
     }
   };
 
@@ -72,9 +77,14 @@ function App() {
   }
 
   const backgroundImageStyle = {
-    backgroundImage: `url('${backgroundImageMapping[weather?.weather[0]?.icon] || defaultBackgroundImage}')`,
+    backgroundImage: `url('${
+      weather?.weather && Array.isArray(weather.weather) && weather.weather.length > 0
+        ? backgroundImageMapping[weather.weather[0].icon] || defaultBackgroundImage
+        : defaultBackgroundImage
+    }')`,
   };
-
+  
+  
   const soundMapping = {
     "01d": clearSkyMusic,
     "02d": clearSkyMusic,
@@ -101,13 +111,19 @@ function App() {
     let audio;
   
     if (weather) {
-      const soundFile = soundMapping[weather?.weather[0]?.icon] || clearSkyMusic;
+      const soundFile = (
+        weather?.weather &&
+        Array.isArray(weather.weather) &&
+        weather.weather.length > 0 &&
+        weather.weather[0].icon
+      )
+        ? soundMapping[weather.weather[0].icon] || ""
+        : "";
       audio = new Audio(soundFile);
       setBgSound(audio);
     }
   
     const handleEnded = () => {
-      // Restart the audio when it ends
       if (audio) {
         audio.currentTime = 0;
         audio.play().catch((error) => {
@@ -148,10 +164,6 @@ function App() {
     };
   }, [bgSound]);
 
-  // const backgroundImageStyle = {
-  //   backgroundImage: `url('defaultBackgroundImage')`,
-  // };
-
   const weatherIconMapping = {
     "01d": clearSky,
     "02d": fewClouds,
@@ -172,6 +184,22 @@ function App() {
     "11n": thunderstorm,
     "13n": snow,
     "50n": fog,
+  };
+
+  const getLocalDateTime = (timestamp, timezoneOffset) => {
+    const utcTime = new Date(timestamp * 1000);
+    const localTime = new Date(utcTime.getTime() + timezoneOffset * 1000);
+    
+    const options = {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+    
+    return new Intl.DateTimeFormat('en-US', options).format(localTime);
   };
 
   return (
@@ -200,17 +228,17 @@ function App() {
         Dolore nostrum laudantium necessitatibus perferendis magnam corrupti nobis ipsum doloremque, odit quis quos enim quae pariatur illum, dignissimos, officia tempora laboriosam error dolorum! Dolores quod ratione, perferendis adipisci incidunt quae!</p>
       </div>
 
-      {weather && (
+      {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
         <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[352px] h-auto rounded-md p-5 absolute top-64'>
           <div>
             <h1 className='text-2xl'>Today at <span className='text-4xl font-semibold'>{weather.name}</span></h1>
             <h1>Country: {weather.sys.country}</h1>
-            <h1>{DateTime.fromSeconds(weather.dt).toLocaleString(DateTime.DATETIME_FULL)}</h1>
+            <h1>{getLocalDateTime(weather.dt, weather.timezone)}</h1>
           </div>
+          {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
           <div className='flex gap-2'>
               <div className='flex flex-col w-[162px] h-auto text-white bg-black bg-opacity-40 rounded-lg p-2'>
                 <h1 className='text-5xl font-semibold'>{weather.main.temp}°</h1>
-                {/* <p>{weather.weather[0].main}</p> */}
                 <p className='text-sm'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</p>
                 <div className='flex flex-col items-end'>
                 <img
@@ -238,16 +266,17 @@ function App() {
                   <div className='flex flex-col'>
                     <div className='flex gap-1 items-center'>
                       <img src="images/sunrise.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{DateTime.fromSeconds(weather.sys.sunrise).toLocaleString(DateTime.TIME_SIMPLE)}</p>
+                      <p className='text-sm'>{new Date(weather.sys.sunrise * 1000).toLocaleTimeString()}</p>
                     </div>
                     <div className='flex gap-1 items-center'>
                       <img src="images/sunset.png" alt="humidity" className='w-[22px] h-[22px]' />
-                      <p className='text-sm'>{DateTime.fromSeconds(weather.sys.sunset).toLocaleString(DateTime.TIME_SIMPLE)}</p>
+                      <p className='text-sm'>{new Date(weather.sys.sunset * 1000).toLocaleTimeString()}</p>
                     </div>
                   </div>
                 </div>
               </div>
           </div>
+          )}
         </div>
       )}
     </div>
