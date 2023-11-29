@@ -22,7 +22,6 @@ class ForecastController extends Controller
 
             $forecastResults = $forecast->json();
 
-            // Extract the relevant forecast data for all available days
             $extendedForecast = $this->extractExtendedForecast($forecastResults);
 
             return response()->json([
@@ -42,23 +41,19 @@ class ForecastController extends Controller
 
     private function extractExtendedForecast(array $forecastResults)
     {
-        // Assuming the forecast data is in the 'list' key of the response
         $forecastList = $forecastResults['list'];
 
-        // Extract the forecast for all available days
         $extendedForecast = [];
         $currentDate = null;
 
         foreach ($forecastList as $forecastData) {
             $date = date('Y-m-d', $forecastData['dt']);
 
-            // Include all available days
             if (!in_array($date, array_column($extendedForecast, 'date'))) {
                 $extendedForecast[] = [
                     'date' => $date,
-                    'weather' => $forecastData['weather'][0], // Assuming you want weather details
-                    'temperature' => $forecastData['main']['temp'], // Assuming you want temperature
-                    // Add more details as needed
+                    'weather' => $forecastData['weather'][0],
+                    'temperature' => $forecastData['main']['temp'],
                 ];
             }
         }

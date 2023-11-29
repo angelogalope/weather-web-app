@@ -214,18 +214,18 @@ function App() {
     <div style={backgroundImageStyle} className="flex flex-col gap-2 items-center justify-center w-full h-screen bg-cover">
 
       {/* Current Clock */}
-      <div className='flex items-center gap-1 bg-black text-white text-xl font-semibold bg-opacity-30 w-auto h-auto rounded-lg p-3 top-5 right-5 absolute z-10'>
+      <div className='flex items-center gap-1 bg-black text-white text-xl font-semibold bg-opacity-50 w-auto h-auto rounded-lg p-3 top-5 right-5 absolute z-10'>
         <Clock />
       </div>
 
       {/* Weather App Title and Description */}
       <div className='text-white text-center pt-3 px-[332px] flex flex-col gap-2'>
-        <h1 id='title' className='text-5xl font-black bg-clip-text text-transparent bg-gradient-to-l from-blue-900 to-green-600'>MelloWeather</h1>
+        <h1 id='title' className='text-5xl font-black bg-clip-text text-transparent text-white'>MelloWeather</h1>
         <p id='desc' className='text-xs font-semibold'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
       </div>
 
       {/* Search Bar */}
-      <div className='flex gap-1 bg-black text-white bg-opacity-30 w-[352px] h-auto rounded-lg p-3'>
+      <div className='flex gap-1 bg-black text-white bg-opacity-50 w-[352px] h-auto rounded-lg p-3'>
         <input 
           placeholder='Search place'
           type="text" 
@@ -244,7 +244,7 @@ function App() {
       {weather && weather.weather && Array.isArray(weather.weather) && weather.weather.length > 0 && (
 
         // Weather Data
-        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-30 w-[752px] h-auto rounded-lg p-5 fade-in'>
+        <div className='flex flex-col bg-black text-white gap-3 bg-opacity-50 w-[752px] h-auto rounded-lg p-5 fade-in'>
           <div className='flex flex-row justify-between'>
             <div className='flex flex-col'>
               <h1 className='text-3xl font-black'>{weather.name}</h1>
@@ -259,7 +259,7 @@ function App() {
               className='w-[92px] h-[92px]'
             />
             <div className='flex flex-col items-center'>
-              <h1 className='text-8xl'>{weather.main.temp}°</h1>
+              <h1 className='text-8xl font-bold'>{weather.main.temp}°</h1>
               <h1 className='text-2xl'>{weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1)}</h1>
             </div>
             <div className='flex flex-col items-start'>
