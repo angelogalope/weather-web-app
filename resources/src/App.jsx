@@ -4,6 +4,7 @@ import './App.css';
 import { IoSearch } from "react-icons/io5";
 import Clock from './components/Clock';
 
+//Dynamic Background Imports
 import defaultBgImage from '/images/bg-image.jpg';
 import bgClearSky from '/images/bgClearSky.png';
 import bgClearSkyNight from '/images/bgClearSkyNight.png';
@@ -13,12 +14,14 @@ import bgThunderstorm from '/images/bgThunderstorm.png';
 import bgSnow from '/images/bgSnow.png';
 import bgFog from '/images/bgFog.png';
 
+//Dynamic Music Imports
 import clearSkyMusic from '/bg-music/clearSkyMusic.MP3?url';
 import clearSkyMusicNight from '/bg-music/clearSkyMusicNight.MP3?url';
 import rainMusic from '/bg-music/rainMusic.MP3?url';
 import thunderstormMusic from '/bg-music/thunderstormMusic.MP3?url';
 import snowMusic from '/bg-music/snowMusic.MP3?url';
 
+//Dynamic Icons Imports
 import clearSky from '/images/clear-sky.png';
 import clearSkyNight from '/images/clear-skyNight.png';
 import fewClouds from '/images/few-clouds.png';
@@ -219,8 +222,11 @@ function App() {
       </div>
 
       {/* Weather App Title and Description */}
-      <div className='text-white text-center pt-3 px-[332px] flex flex-col gap-2'>
-        <h1 id='title' className='text-5xl font-black bg-clip-text text-transparent text-white'>MelloWeather</h1>
+      <div className='text-white text-center px-[332px] flex flex-col items-center'>
+        <div className='flex items-center gap-2'>
+          <img src="/images/mwlogo.png" className='w-[82px] h-[82px]' alt="" />
+          <h1 id='title' className='text-5xl font-black bg-clip-text text-transparent text-white'>MelloWeather</h1>
+        </div>
         <p id='desc' className='text-xs font-semibold'>Embark on a sensory journey with MelloWeather, a weather app that turns forecasts into a harmonious experience. Imagine your daily weather check accompanied by a carefully curated soundtrack that mirrors the mood of the skies.</p>
       </div>
 
